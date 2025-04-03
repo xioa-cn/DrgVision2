@@ -1,0 +1,36 @@
+﻿<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Style
+        x:Key="XcTabItem_Delete_Style"
+        TargetType="TabItem">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="TabItem">
+                    <Grid>
+                        <StackPanel>
+                            <Border Background="LightCyan">
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock
+                                        VerticalAlignment="Center"
+                                        FontSize="17"
+                                        Text="{TemplateBinding Header}" />
+                                    <Button
+                                        Margin="10,0"
+                                        Background="Transparent"
+                                        BorderThickness="0"
+                                        Content="X"
+                                        FontSize="17"
+                                        Foreground="Gray" />
+                                </StackPanel>
+                            </Border>
+
+                            <ContentPresenter />
+                        </StackPanel>
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+</ResourceDictionary>

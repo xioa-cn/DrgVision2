@@ -1,0 +1,866 @@
+﻿<Window
+    x:Class="AutoNodeVision.Views.MainView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:component="clr-namespace:AutoNodeVison.Component.ControlClass;assembly=AutoNodeVison.Component"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:halconControl="clr-namespace:HalconDotNet;assembly=halcondotnet"
+    xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+    xmlns:local="clr-namespace:AutoNodeVision.Views"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
+    xmlns:vm="clr-namespace:AutoNodeVision.ViewModels"
+    Title="MainView"
+    Width="1600"
+    Height="960"
+    d:DataContext="{d:DesignInstance Type=vm:MainViewModel}"
+    mc:Ignorable="d">
+    <WindowChrome.WindowChrome>
+        <WindowChrome GlassFrameThickness="0" />
+    </WindowChrome.WindowChrome>
+    <Window.Resources>
+        <Style TargetType="md:PackIcon">
+            <Setter Property="Width" Value="30" />
+            <Setter Property="Height" Value="30" />
+            <Setter Property="Margin" Value="5" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Foreground" Value="Blue" />
+                </Trigger>
+                <Trigger Property="IsMouseOver" Value="False">
+                    <Setter Property="Foreground" Value="Gray" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+    </Window.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="auto" />
+        </Grid.RowDefinitions>
+
+        <!-- 第一行，头部 -->
+        <Grid Height="60">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="auto" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <!-- 第一列，图片和标题 -->
+            <StackPanel
+                VerticalAlignment="Center"
+                Orientation="Horizontal">
+                <Image
+                    Width="40"
+                    Height="40"
+                    Margin="10"
+                    Source="\Resource\Image\Logo.jfif" />
+                <TextBlock
+                    Margin="5,10"
+                    VerticalAlignment="Center"
+                    FontSize="21"
+                    FontWeight="Bold"
+                    Text="动态编辑式自研视觉框架" />
+            </StackPanel>
+
+            <!-- 第二列，操作按钮 -->
+            <StackPanel
+                Grid.Column="1"
+                HorizontalAlignment="Right"
+                Orientation="Horizontal">
+                <Button
+                    Background="Transparent"
+                    BorderBrush="Transparent"
+                    Content="开始"
+                    FontSize="17" />
+                <Button
+                    Margin="20,0"
+                    Background="Transparent"
+                    BorderBrush="Transparent"
+                    Content="视图"
+                    FontSize="15" />
+                <Button
+                    Margin="20,0"
+                    Background="Transparent"
+                    BorderBrush="Transparent"
+                    Content="流程"
+                    FontSize="15" />
+                <Button
+                    Margin="20,0"
+                    Background="Transparent"
+                    BorderBrush="Transparent"
+                    Content="工具"
+                    FontSize="15" />
+                <Button
+                    Margin="20,0"
+                    Background="Transparent"
+                    BorderBrush="Transparent"
+                    Content="系统"
+                    FontSize="15" />
+                <Button
+                    Margin="20,0"
+                    Background="Transparent"
+                    BorderBrush="Transparent"
+                    Content="关于"
+                    FontSize="15" />
+
+
+            </StackPanel>
+
+            <!-- 第三列 -->
+            <StackPanel
+                Grid.Column="2"
+                Margin="20,0,0,0"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Center"
+                Orientation="Horizontal">
+                <Border
+                    BorderBrush="Blue"
+                    BorderThickness="1"
+                    CornerRadius="16">
+                    <md:PackIcon
+                        Width="30"
+                        Height="30"
+                        VerticalAlignment="Center"
+                        Foreground="Blue"
+                        Kind="User" />
+                </Border>
+                <TextBlock
+                    Margin="20,0"
+                    VerticalAlignment="Center"
+                    Text="&lt;未登录&gt;" />
+                <Button
+                    Margin="20,0"
+                    Background="Transparent"
+                    BorderBrush="Transparent"
+                    Click="Mini_WindowClick">
+                    <md:PackIcon
+                        Width="30"
+                        Height="30"
+                        Kind="Minimize" />
+                </Button>
+                <Button
+                    Margin="20,0"
+                    Background="Transparent"
+                    BorderBrush="Transparent"
+                    Click="MaxOrNomalWindow_Click">
+                    <md:PackIcon
+                        Width="30"
+                        Height="30"
+                        Kind="Maximize" />
+                </Button>
+                <Button
+                    Margin="20,0"
+                    Background="Transparent"
+                    BorderBrush="Transparent"
+                    Click="CloseWindow_Click">
+                    <md:PackIcon
+                        Width="30"
+                        Height="30"
+                        Kind="Close" />
+                </Button>
+
+            </StackPanel>
+        </Grid>
+
+        <!-- 第二行，中间 -->
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="100" />
+                <ColumnDefinition />
+                <ColumnDefinition />
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+
+            <!-- 第一列，操作按钮 -->
+            <ScrollViewer VerticalScrollBarVisibility="Hidden">
+                <StackPanel>
+                    <Button
+                        Padding="0"
+                        Background="Transparent"
+                        BorderBrush="Transparent"
+                        BorderThickness="0">
+                        <Grid>
+                            <Border
+                                Width="60"
+                                Background="LightCyan" />
+                            <StackPanel>
+                                <Border
+                                    Width="40"
+                                    Margin="0,15,0,0"
+                                    Background="blue"
+                                    CornerRadius="36">
+                                    <md:PackIcon
+                                        Width="30"
+                                        Height="30"
+                                        HorizontalAlignment="Center"
+                                        Foreground="Snow"
+                                        Kind="LockAdd" />
+                                </Border>
+                                <TextBlock
+                                    Margin="0,5"
+                                    HorizontalAlignment="Center"
+                                    FontSize="17"
+                                    Text="锁定" />
+                            </StackPanel>
+                        </Grid>
+                    </Button>
+
+                    <Button
+                        Margin="0,10,0,0"
+                        Padding="0"
+                        Background="Transparent"
+                        BorderBrush="Transparent"
+                        BorderThickness="0">
+                        <Grid>
+                            <Border
+                                Width="60"
+                                Background="LightCyan" />
+                            <StackPanel>
+                                <Border
+                                    Width="40"
+                                    Margin="0,15,0,0"
+                                    Background="blue"
+                                    CornerRadius="36">
+                                    <md:PackIcon
+                                        Width="30"
+                                        Height="30"
+                                        HorizontalAlignment="Center"
+                                        Foreground="Snow"
+                                        Kind="Play" />
+                                </Border>
+                                <TextBlock
+                                    Margin="0,10"
+                                    HorizontalAlignment="Center"
+                                    FontSize="17"
+                                    Text="启动" />
+                            </StackPanel>
+                        </Grid>
+                    </Button>
+
+                    <Button
+                        Padding="0"
+                        Background="Transparent"
+                        BorderBrush="Transparent"
+                        BorderThickness="0">
+                        <Grid>
+                            <Border
+                                Width="60"
+                                Background="LightCyan" />
+                            <StackPanel>
+                                <Border
+                                    Width="40"
+                                    Margin="0,15,0,0"
+                                    Background="blue"
+                                    CornerRadius="36">
+                                    <md:PackIcon
+                                        Width="30"
+                                        Height="30"
+                                        HorizontalAlignment="Center"
+                                        Foreground="Snow"
+                                        Kind="Pause" />
+                                </Border>
+                                <TextBlock
+                                    Margin="0,10"
+                                    HorizontalAlignment="Center"
+                                    FontSize="17"
+                                    Text="暂停" />
+                            </StackPanel>
+                        </Grid>
+                    </Button>
+
+
+                    <Button
+                        Padding="0"
+                        Background="Transparent"
+                        BorderBrush="Transparent"
+                        BorderThickness="0">
+                        <Grid>
+                            <Border
+                                Width="60"
+                                Background="LightCyan" />
+                            <StackPanel>
+                                <Border
+                                    Width="40"
+                                    Margin="0,15,0,0"
+                                    Background="blue"
+                                    CornerRadius="36">
+                                    <md:PackIcon
+                                        Width="30"
+                                        Height="30"
+                                        HorizontalAlignment="Center"
+                                        Foreground="Snow"
+                                        Kind="BackupRestore" />
+                                </Border>
+                                <TextBlock
+                                    Margin="0,10"
+                                    HorizontalAlignment="Center"
+                                    FontSize="17"
+                                    Text="复位" />
+                            </StackPanel>
+                        </Grid>
+                    </Button>
+
+                    <Button
+                        Padding="0"
+                        Background="Transparent"
+                        BorderBrush="Transparent"
+                        BorderThickness="0">
+                        <Grid>
+                            <Border
+                                Width="60"
+                                Background="LightCyan" />
+                            <StackPanel>
+                                <Border
+                                    Width="40"
+                                    Margin="0,15,0,0"
+                                    Background="blue"
+                                    CornerRadius="36">
+                                    <md:PackIcon
+                                        Width="30"
+                                        Height="30"
+                                        HorizontalAlignment="Center"
+                                        Foreground="Snow"
+                                        Kind="Stop" />
+                                </Border>
+                                <TextBlock
+                                    Margin="0,10"
+                                    HorizontalAlignment="Center"
+                                    FontSize="17"
+                                    Text="停止" />
+                            </StackPanel>
+                        </Grid>
+                    </Button>
+
+                    <Button
+                        Padding="0"
+                        Background="Transparent"
+                        BorderBrush="Transparent"
+                        BorderThickness="0">
+                        <Grid>
+                            <Border
+                                Width="60"
+                                Background="LightCyan" />
+                            <StackPanel>
+                                <Border
+                                    Width="40"
+                                    Margin="0,15,0,0"
+                                    Background="blue"
+                                    CornerRadius="36">
+                                    <md:PackIcon
+                                        Width="30"
+                                        Height="30"
+                                        HorizontalAlignment="Center"
+                                        Foreground="Snow"
+                                        Kind="StepForward" />
+                                </Border>
+                                <TextBlock
+                                    Margin="0,10"
+                                    HorizontalAlignment="Center"
+                                    FontSize="17"
+                                    Text="单步" />
+                            </StackPanel>
+                        </Grid>
+                    </Button>
+
+                    <Button
+                        Padding="0"
+                        Background="Transparent"
+                        BorderBrush="Transparent"
+                        BorderThickness="0">
+                        <Grid>
+                            <Border
+                                Width="60"
+                                Background="LightCyan" />
+                            <StackPanel>
+                                <Border
+                                    Width="40"
+                                    Margin="0,15,0,0"
+                                    Background="blue"
+                                    CornerRadius="36">
+                                    <md:PackIcon
+                                        Width="30"
+                                        Height="30"
+                                        HorizontalAlignment="Center"
+                                        Foreground="Snow"
+                                        Kind="PlaylistPlay" />
+                                </Border>
+                                <TextBlock
+                                    Margin="0,10"
+                                    HorizontalAlignment="Center"
+                                    FontSize="17"
+                                    Text="单次" />
+                            </StackPanel>
+                        </Grid>
+                    </Button>
+
+                    <Button
+                        Padding="0"
+                        Background="Transparent"
+                        BorderBrush="Transparent"
+                        BorderThickness="0">
+                        <Grid>
+                            <Border
+                                Width="60"
+                                Background="LightCyan" />
+                            <StackPanel>
+                                <Border
+                                    Width="40"
+                                    Margin="0,15,0,0"
+                                    Background="blue"
+                                    CornerRadius="36">
+                                    <md:PackIcon
+                                        Width="30"
+                                        Height="30"
+                                        HorizontalAlignment="Center"
+                                        Foreground="Snow"
+                                        Kind="Autorenew" />
+                                </Border>
+                                <TextBlock
+                                    Margin="0,10"
+                                    HorizontalAlignment="Center"
+                                    FontSize="17"
+                                    Text="循环" />
+                            </StackPanel>
+                        </Grid>
+                    </Button>
+
+                    <Button
+                        Margin="0,20,0,0"
+                        Padding="0"
+                        Background="Transparent"
+                        BorderBrush="Transparent"
+                        BorderThickness="0">
+                        <Grid>
+                            <Border
+                                Width="60"
+                                Background="LightCyan" />
+                            <StackPanel>
+                                <Border
+                                    Width="40"
+                                    Margin="0,15,0,0"
+                                    Background="blue"
+                                    CornerRadius="36">
+                                    <md:PackIcon
+                                        Width="30"
+                                        Height="30"
+                                        HorizontalAlignment="Center"
+                                        Foreground="Snow"
+                                        Kind="PlaylistCheck" />
+                                </Border>
+                                <TextBlock
+                                    Margin="0,10"
+                                    HorizontalAlignment="Center"
+                                    FontSize="17"
+                                    Text="选项" />
+                            </StackPanel>
+                        </Grid>
+                    </Button>
+                    <Button
+                        Padding="0"
+                        Background="Transparent"
+                        BorderBrush="Transparent"
+                        BorderThickness="0">
+                        <Grid>
+                            <Border
+                                Width="60"
+                                Background="LightCyan" />
+                            <StackPanel>
+                                <Border
+                                    Width="40"
+                                    Margin="0,15,0,0"
+                                    Background="blue"
+                                    CornerRadius="36">
+                                    <md:PackIcon
+                                        Width="30"
+                                        Height="30"
+                                        HorizontalAlignment="Center"
+                                        Foreground="Snow"
+                                        Kind="CarBrakeAlert" />
+                                </Border>
+                                <TextBlock
+                                    Margin="0,10"
+                                    HorizontalAlignment="Center"
+                                    FontSize="17"
+                                    Text="退出" />
+                            </StackPanel>
+                        </Grid>
+                    </Button>
+                </StackPanel>
+            </ScrollViewer>
+
+            <!-- 第二列，视图和日志 -->
+            <Grid Grid.Column="1">
+                <Grid.RowDefinitions>
+                    <RowDefinition />
+                    <RowDefinition />
+                </Grid.RowDefinitions>
+
+                <!-- 第一行，视图显示 -->
+                <GroupBox
+                    BorderBrush="LightBlue"
+                    BorderThickness="1"
+                    Header="视图显示"
+                    Style="{StaticResource XcGroupboxStyle}">
+                    <Border
+                        Margin="3"
+                        BorderBrush="#40E0D0"
+                        BorderThickness="1">
+                        <Grid>
+                            <TabControl
+                                x:Name="view_Tabcontrol"
+                                ItemContainerStyle="{StaticResource XcTabItemStyle}"
+                                ItemsSource="{Binding ViewTabItemList}"
+                                SelectedIndex="{Binding ElementName=node_Tabcontrol, Path=SelectedIndex}"
+                                Visibility="Collapsed">
+                                <TabControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding Header}" />
+                                    </DataTemplate>
+                                </TabControl.ItemTemplate>
+                                <TabControl.ContentTemplate>
+                                    <DataTemplate>
+                                        <Border
+                                            Margin="3"
+                                            BorderBrush="#40E0D0"
+                                            BorderThickness="1">
+                                            <halconControl:HSmartWindowControlWPF x:Name="hsmart" />
+                                        </Border>
+                                    </DataTemplate>
+                                </TabControl.ContentTemplate>
+
+                            </TabControl>
+
+
+                            <halconControl:HSmartWindowControlWPF x:Name="hsmart" />
+
+                        </Grid>
+                    </Border>
+                </GroupBox>
+
+                <!-- 第二行，日志显示 -->
+                <GroupBox
+                    Grid.Row="1"
+                    Margin="0,5"
+                    BorderBrush="LightBlue"
+                    BorderThickness="1"
+                    Header="日志显示"
+                    Style="{StaticResource XcGroupboxStyle}">
+                    <DockPanel
+                        MinHeight="370"
+                        Margin="2,2,0,0">
+                        <TabControl
+                            BorderThickness="0"
+                            ItemsSource="{Binding LogItemList}"
+                            SelectedIndex="{Binding ElementName=node_Tabcontrol, Path=SelectedIndex}">
+
+                            <TabControl.ItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding Header}" />
+                                </DataTemplate>
+                            </TabControl.ItemTemplate>
+                            <TabControl.ContentTemplate>
+                                <DataTemplate>
+                                    <DataGrid
+                                        AutoGenerateColumns="False"
+                                        Background="Transparent"
+                                        GridLinesVisibility="Horizontal"
+                                        IsReadOnly="True"
+                                        ItemsSource="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}, Path=DataContext.FlowHelper.LogList}">
+
+                                        <DataGrid.ColumnHeaderStyle>
+                                            <Style TargetType="DataGridColumnHeader">
+                                                <Setter Property="FontSize" Value="19" />
+                                                <Setter Property="HorizontalAlignment" Value="Center" />
+                                                <Setter Property="Background" Value="Transparent" />
+
+                                                <!-- 浅灰色背景，和白色底色过渡自然 -->
+                                                <Setter Property="Foreground" Value="#333333" />
+                                                <!-- 深灰色文字，清晰易读 -->
+                                            </Style>
+                                        </DataGrid.ColumnHeaderStyle>
+
+                                        <DataGrid.CellStyle>
+                                            <Style TargetType="DataGridCell">
+                                                <Setter Property="FontSize" Value="19" />
+                                                <Setter Property="HorizontalAlignment" Value="Center" />
+                                                <Setter Property="Background" Value="White" />
+                                                <!-- 保持白色背景，和整体界面底色一致 -->
+                                                <Setter Property="Foreground" Value="#333333" />
+                                                <!-- 深灰色文字 -->
+                                            </Style>
+                                        </DataGrid.CellStyle>
+
+                                        <DataGrid.RowStyle>
+                                            <Style TargetType="DataGridRow">
+                                                <Setter Property="Background" Value="White" />
+                                                <!-- 白色背景 -->
+                                                <Setter Property="Foreground" Value="#333333" />
+                                                <!-- 深灰色文字 -->
+                                                <!-- 选中状态颜色覆盖 -->
+                                                <Style.Triggers>
+                                                    <Trigger Property="IsSelected" Value="True">
+                                                        <Setter Property="Background" Value="#F0F0F0" />
+                                                        <!-- 比表头背景稍浅一点的浅灰色，作为选中效果 -->
+                                                        <Setter Property="Foreground" Value="#00FFFF" />
+                                                        <!-- 深灰色文字 -->
+                                                    </Trigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </DataGrid.RowStyle>
+
+                                        <DataGrid.Columns>
+                                            <DataGridTextColumn
+                                                Width="auto"
+                                                Binding="{Binding Time}"
+                                                Header="时间" />
+                                            <DataGridTextColumn
+                                                Width="*"
+                                                Binding="{Binding Message}"
+                                                Header="消息" />
+                                        </DataGrid.Columns>
+                                    </DataGrid>
+                                </DataTemplate>
+                            </TabControl.ContentTemplate>
+
+                        </TabControl>
+                    </DockPanel>
+                </GroupBox>
+            </Grid>
+
+            <!-- 第三列，流程编辑器 -->
+            <GroupBox
+                Grid.Column="2"
+                Margin="2,0,0,2"
+                BorderBrush="LightBlue"
+                BorderThickness="1"
+                Header="流程编辑器"
+                Style="{StaticResource XcGroupboxStyle}">
+                <TabControl
+                    x:Name="node_Tabcontrol"
+                    ItemsSource="{Binding NodeTabItemList}"
+                    SelectedIndex="0">
+                    <TabControl.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Header}" />
+                        </DataTemplate>
+                    </TabControl.ItemTemplate>
+                    <TabControl.ContentTemplate>
+                        <DataTemplate>
+
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="*" />
+                                </Grid.RowDefinitions>
+                                <Border Background="LightGray">
+                                    <StackPanel Orientation="Horizontal">
+                                        <Button
+                                            Background="Transparent"
+                                            BorderThickness="0"
+                                            ToolTip="启动">
+                                            <md:PackIcon Kind="Play" />
+                                        </Button>
+                                        <Button
+                                            Background="Transparent"
+                                            BorderThickness="0"
+                                            ToolTip="循环">
+                                            <md:PackIcon Kind="SyncCircle" />
+                                        </Button>
+                                        <Button
+                                            Background="Transparent"
+                                            BorderThickness="0"
+                                            ToolTip="单步">
+                                            <md:PackIcon Kind="StepForward" />
+                                        </Button>
+                                        <Button
+                                            Background="Transparent"
+                                            BorderThickness="0"
+                                            ToolTip="暂停">
+                                            <md:PackIcon Kind="Pause" />
+                                        </Button>
+
+                                        <Button
+                                            Background="Transparent"
+                                            BorderThickness="0">
+                                            <md:PackIcon Kind="JumpRope" />
+                                        </Button>
+
+                                        <Button
+                                            Background="Transparent"
+                                            BorderThickness="0">
+                                            <md:PackIcon Kind="MagnifyPlus" />
+                                        </Button>
+
+                                        <Button
+                                            Background="Transparent"
+                                            BorderThickness="0">
+                                            <md:PackIcon Kind="MagnifyMinusOutline" />
+                                        </Button>
+
+                                        <Button
+                                            Background="Transparent"
+                                            BorderThickness="0">
+                                            <md:PackIcon Kind="BriefcaseEditOutline" />
+                                        </Button>
+
+                                        <Button
+                                            Background="Transparent"
+                                            BorderThickness="0"
+                                            ToolTip="删除">
+                                            <md:PackIcon Kind="Delete" />
+                                        </Button>
+
+                                    </StackPanel>
+
+                                </Border>
+
+                                <Canvas
+                                    x:Name="canvas_n"
+                                    Grid.Row="1"
+                                    AllowDrop="True"
+                                    Background="Transparent">
+                                    <i:Interaction.Triggers>
+                                        <i:EventTrigger EventName="PreviewDrop">
+                                            <i:CallMethodAction
+                                                MethodName="Canvas_Drop"
+                                                TargetObject="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}, Path=DataContext.FlowHelper}" />
+                                        </i:EventTrigger>
+                                    </i:Interaction.Triggers>
+                                </Canvas>
+
+
+                            </Grid>
+
+                        </DataTemplate>
+                    </TabControl.ContentTemplate>
+
+                </TabControl>
+
+            </GroupBox>
+
+            <!-- 第四列，视觉工具箱 -->
+            <GroupBox
+                Grid.Column="3"
+                Margin="2,0,0,2"
+                BorderBrush="LightBlue"
+                BorderThickness="1"
+                Header="视觉工具箱"
+                Style="{StaticResource XcGroupboxStyle}">
+                <StackPanel Margin="10">
+                    <Button
+                        Padding="5"
+                        Background="Orange"
+                        BorderThickness="0"
+                        Command="{Binding AaddFlowCommand}">
+                        <Button.Resources>
+                            <Style TargetType="{x:Type Border}">
+                                <Setter Property="CornerRadius" Value="10" />
+                                <Setter Property="BorderThickness" Value="0" />
+                            </Style>
+                        </Button.Resources>
+                        <StackPanel
+                            HorizontalAlignment="Center"
+                            Orientation="Horizontal">
+                            <md:PackIcon
+                                Width="40"
+                                Height="40"
+                                VerticalAlignment="Center"
+                                Foreground="Snow"
+                                Kind="NewspaperVariantOutline" />
+                            <TextBlock
+                                Margin="30,0"
+                                VerticalAlignment="Center"
+                                FontSize="19"
+                                FontWeight="Bold"
+                                Foreground="Snow"
+                                Text="新建流程" />
+                        </StackPanel>
+                    </Button>
+
+                    <!-- 工具箱菜单 -->
+                    <ScrollViewer VerticalScrollBarVisibility="Hidden">
+                        <TreeView
+                            Margin="20,5,0,0"
+                            BorderThickness="0"
+                            ItemsSource="{Binding VisionToolList}">
+                            <TreeView.ItemTemplate>
+                                <HierarchicalDataTemplate ItemsSource="{Binding Children}">
+
+                                    <StackPanel
+                                        HorizontalAlignment="Center"
+                                        Orientation="Horizontal">
+                                        <i:Interaction.Triggers>
+                                            <i:EventTrigger EventName="MouseLeftButtonDown">
+                                                <i:CallMethodAction
+                                                    MethodName="StackPanel_MouseLeftButtonDown"
+                                                    TargetObject="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}, Path=DataContext.FlowHelper}" />
+                                            </i:EventTrigger>
+                                        </i:Interaction.Triggers>
+                                        <md:PackIcon
+                                            Width="40"
+                                            Height="40"
+                                            VerticalAlignment="Center"
+                                            Foreground="DarkCyan"
+                                            Kind="{Binding Icon}" />
+                                        <TextBlock
+                                            Margin="30,0"
+                                            VerticalAlignment="Center"
+                                            FontSize="19"
+                                            Tag="{Binding ToolControl}"
+                                            Text="{Binding Name}" />
+                                    </StackPanel>
+
+                                </HierarchicalDataTemplate>
+                            </TreeView.ItemTemplate>
+                        </TreeView>
+                    </ScrollViewer>
+
+
+
+                </StackPanel>
+            </GroupBox>
+        </Grid>
+
+        <!-- 第三行，底部 -->
+        <Border
+            Grid.Row="2"
+            BorderBrush="LightGray"
+            BorderThickness="2" />
+        <DockPanel
+            Grid.Row="2"
+            LastChildFill="False">
+            <StackPanel
+                Margin="10"
+                VerticalAlignment="Center"
+                Orientation="Horizontal">
+                <TextBlock
+                    FontSize="19"
+                    Foreground="Gray"
+                    Text="正在执行:" />
+                <TextBlock
+                    Margin="15,0"
+                    FontSize="19"
+                    Text="示例程序" />
+            </StackPanel>
+
+            <StackPanel
+                Margin="10"
+                VerticalAlignment="Center"
+                DockPanel.Dock="Right"
+                Orientation="Horizontal">
+                <TextBlock
+                    FontSize="19"
+                    Foreground="Gray"
+                    Text="系统运行时间" />
+                <TextBlock
+                    Margin="20,0"
+                    FontSize="19"
+                    Text="{Binding SystemTime}" />
+            </StackPanel>
+        </DockPanel>
+    </Grid>
+</Window>
