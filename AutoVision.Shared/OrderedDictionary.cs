@@ -8,12 +8,12 @@ using System.Threading.Tasks;
 namespace AutoVision.Shared
 {
     // 定义一个有序字典类，支持泛型键和值
-    public class OrderedDictionary<TKey, TValue> : IEnumerable<KeyValuePair<TKey, TValue>>
+    public class OrderedDictionary<TKey, TValue> : IEnumerable<KeyValuePair<TKey, TValue>> where TKey : notnull
     {
 
         #region  字段和属性
         // 内部使用普通字典来存储键值对，用于快速根据键获取值
-        private Dictionary<TKey, TValue> dictionary = new Dictionary<TKey, TValue>();
+        private readonly Dictionary<TKey, TValue> dictionary = new Dictionary<TKey, TValue>();
 
         // 维护一个键的列表，用于保持插入顺序
         private readonly List<TKey> keyList = new List<TKey>();
@@ -85,9 +85,8 @@ namespace AutoVision.Shared
         /// <param name="value"></param>
         public void Add(TKey key, TValue value)
         {
-            if (!dictionary.ContainsKey(key))
+            if (dictionary.TryAdd(key, value))
             {
-                dictionary.Add(key, value);
                 keyList.Add(key);
             }
             else
